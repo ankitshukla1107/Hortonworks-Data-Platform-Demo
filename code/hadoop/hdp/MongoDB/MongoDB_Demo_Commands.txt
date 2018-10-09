@@ -1,0 +1,77 @@
+Demo-1: Install MongoDB and integrate Spark with MongoDB
+=========================================================
+
+1) Need to install connector for Ambari MongoDB
+-----------------------------------------------
+a) Go to location --> /var/lib/ambari-server/resources/stacks/HDP/2.6/services 
+b) git clone https://github.com/nikunjness/mongo-ambari.git
+c) Restart Ambari service by executing command-
+--> ambari-server restart
+d) Login to Ambari and go to Actions->Add Service-> MongoDB should be availble in list
+e) Select it--> Next--> Next--> Next--> Next--> Proceed Anyway-->Deploy--> Next--> Complete--> Restart all affected components
+
+2) Upload u.user file from movielens dataset onto HDFS at location --> /user/maria_dev/ml-100k
+-----------------------------------------------------------------------------------------------
+
+3) Finish installing things for python for integrating mongodb with spark
+--------------------------------------------------------------------------
+a) pip install pymongo
+b) export SPARK_MAJOR_VERSION=2
+c) spark-submit --packages org.mongodb.spark:mongo-spark-connector_2.11:2.3.0 MongoSpark.py
+d) Output is availble on console
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Demo-2: Using the MongoDB shell
+===============================
+
+1) Go to mongodb shell by executing command-
+--> mongo
+2) use movielens
+3) db.users.find( {user_id: 100 } )
+4) db.users.explain().find( {user_id: 100 } )
+5) Create index for searching fast
+--> db.users.createIndex( {user_id: 1} ) 
+// It means create index on user_id field and 1 means in ascending order
+6) db.users.explain().find( {user_id: 100 } )
+7) db.users.find( {user_id: 100 } )
+
+-----
+
+8) MongoDB built-in aggregation 
+
+db.users.aggregate( [                                                                                                               
+... { $group: {_id: {occupation: "$occupation"}, avgAge: { $avg: "$age"} } }                                                          
+... ])                                                                                                                                
+{ "_id" : { "occupation" : "doctor" }, "avgAge" : 43.57142857142857 }                                                                 
+{ "_id" : { "occupation" : "healthcare" }, "avgAge" : 41.5625 }                                                                       
+{ "_id" : { "occupation" : "none" }, "avgAge" : 26.555555555555557 }                                                                  
+{ "_id" : { "occupation" : "engineer" }, "avgAge" : 36.38805970149254 }                                                               
+{ "_id" : { "occupation" : "homemaker" }, "avgAge" : 32.57142857142857 }                                                              
+{ "_id" : { "occupation" : "marketing" }, "avgAge" : 37.61538461538461 }                                                              
+{ "_id" : { "occupation" : "artist" }, "avgAge" : 31.392857142857142 }                                                                
+{ "_id" : { "occupation" : "librarian" }, "avgAge" : 40 }                                                                             
+{ "_id" : { "occupation" : "entertainment" }, "avgAge" : 29.22222222222222 }                                                          
+{ "_id" : { "occupation" : "scientist" }, "avgAge" : 35.54838709677419 }                                                              
+{ "_id" : { "occupation" : "salesman" }, "avgAge" : 35.666666666666664 }                                                              
+{ "_id" : { "occupation" : "educator" }, "avgAge" : 42.01052631578948 }                                                               
+{ "_id" : { "occupation" : "lawyer" }, "avgAge" : 36.75 }                                                                             
+{ "_id" : { "occupation" : "student" }, "avgAge" : 22.081632653061224 }                                                               
+{ "_id" : { "occupation" : "programmer" }, "avgAge" : 33.121212121212125 }                                                            
+{ "_id" : { "occupation" : "administrator" }, "avgAge" : 38.74683544303797 }                                                          
+{ "_id" : { "occupation" : "writer" }, "avgAge" : 36.31111111111111 }                                                                 
+{ "_id" : { "occupation" : "retired" }, "avgAge" : 63.07142857142857 }                                                                
+{ "_id" : { "occupation" : "executive" }, "avgAge" : 38.71875 }                                                                       
+{ "_id" : { "occupation" : "other" }, "avgAge" : 34.523809523809526 }  
+
+9) db.users.count()                                                                                                                    
+
+10) Actual collections list in database:
+--> db.getCollectionInfos()  
+
+11) Clean up mess
+--> db.users.drop()
+
+12) exit
+
+13) Stop MongoDB service on Ambari         

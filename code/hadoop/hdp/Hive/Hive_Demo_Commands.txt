@@ -1,0 +1,51 @@
+Demo-1: Hive to find most popular movie:
+----------------------------------------
+
+1) Go to hive view and upload data, perform following steps-
+
+a) Change delimiter field to horizontal tab and upload u.data from data/ml-100k folder
+b) Rename table name to ratings
+c) Rename column name to userID, movieID, rating, epochseconds
+
+Same for another data set
+
+a) Change delimiter field to | and upload u.item from data/ml-100k folder
+b) Rename table name to "names"
+c) Rename column name to following:
+   column1 to movieID, column2 to title, rest as it is
+   
+2) Refresh database in Hive view and tables will be listed in default database
+
+3) Execute following commands:
+
+CREATE VIEW IF NOT EXISTS topMovieIDs AS
+SELECT movieID, count(movieID) as ratingCount
+from ratings
+GROUP BY movieID
+order by ratingCount DESC;
+
+SELECT n.title, ratingCount 
+FROM topMovieIDs t JOIN names n ON t.movieID = n.movieID
+
+4) Clean the stuff by executing follwing commands:
+--> DROP VIEW topMovieIDs;
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Demo-2: Use Hive to find the movie with the highest average rating (Only consider movies with more than 10 ratings):
+--------------------------------------------------------------------------------------------------------------------
+
+CREATE VIEW IF NOT EXISTS avgRatings AS
+SELECT movieID, AVG(rating) as avgRating, COUNT(movieID) as ratingCount
+from ratings
+GROUP BY movieID
+ORDER BY avgRating DESC;
+
+SELECT n.title, avgRating
+FROM avgRatings t JOIN names n ON t.movieID = n.movieID
+WHERE ratingCount > 10;
+
+--> DROP VIEW avgRatings;
+
+

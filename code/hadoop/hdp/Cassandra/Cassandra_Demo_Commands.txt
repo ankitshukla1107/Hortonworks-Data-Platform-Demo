@@ -1,0 +1,80 @@
+Demo: Activity Installing Cassandra
+====================================
+
+1) Python 2.7 should be installed on Environment (Already installed)
+2) Go to location --> /etc/yum.repos.d 
+3) Create a file with name "datastax.repo" and enter following content in it-
+
+[datastax]
+name = DataStax Repo for Apache Cassandra
+baseurl = http://rpm.datastax.com/community
+enabled = 1
+gpgcheck = 0
+
+4) At location /etc/yum.repos.d
+--> yum install dsc30
+
+5) Install python dependencies for CQL by executing command-
+--> pip install cqlsh
+
+6) Finally run cassandra-
+--> service cassandra start
+
+7) Connect to cqlsh-
+--> cqlsh
+
+If you get below error:
+Connection error: ('Unable to connect to any servers', {'127.0.0.1': ProtocolError("cql_version '3.3.1' is not supported by remote (w/
+ native protocol). Supported versions: [u'3.4.0']",)})
+ 
+Then execute command-
+--> cqlsh --cqlversion="3.4.0"
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Demo: Creating a movielens table in Cassandra
+==============================================
+
+1) Create a keyspace (similar to database in RDBMS) with below command
+----------------------------------------------------------------------
+--> CREATE KEYSPACE movielens WITH replication = {'class': 'SimpleStrategy', 'replication_factor':'1'} AND durable_writes = true;
+
+2) USE movielens;
+
+3) CREATE TABLE users( user_id int, age int, gender text, occupation text, zip text, PRIMARY KEY(user_id));
+
+4) DESCRIBE TABLE users;
+
+5) SELECT * FROM users;
+
+6) exit
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Demo: Write Spark output into Cassandra
+=======================================
+
+1) Download script that integrate spark with Cassandra at location /etc/yum.repos.d
+--> wget http://media.sundog-soft.com/hadoop/CassandraSpark.py
+
+2) export SPARK_MAJOR_VERSION=2
+
+3) spark-submit --packages datastax:spark-cassandra-connector:2.3.0-s_2.11 CassandraSpark.py
+
+4) Verify data is available in cassandra:
+--> cqlsh --cqlversion="3.4.0"
+
+5) USE movielens
+
+6) select * from users limit 10;
+
+7) Clean stuff-
+--> service cassandra stop
+
+
+
+
+
+
+
+
+

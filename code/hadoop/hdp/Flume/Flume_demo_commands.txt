@@ -1,0 +1,19 @@
+Login Credentials : maria_dev/maria_dev
+
+Demo: Set up Flume to monitor a directory and store its data in HDFS
+--------------------------------------------------------------------
+
+1) Use flumelogs.conf which describes source, sinks and channel
+
+2) Create folder spool at location /home/maria_dev/
+
+3) Create HDFS directory with name "flume" at location /user/maria_dev 
+
+4) At location ---> /usr/hdp/current/flume-server 
+   Start Agent with command ---> bin/flume-ng agent --conf conf --conf-file ~/flumelogs.conf --name a1 -Dflume.root.logger=INFO,console
+   
+5) cp /home/maria_dev/access_log_small.txt /home/maria_dev/spool/demo.txt
+
+6) inside spool folder demo.txt.COMPLETED will be created
+
+7) Verify file is transfered to desired HDFS location which is /user/maria_dev/flume/

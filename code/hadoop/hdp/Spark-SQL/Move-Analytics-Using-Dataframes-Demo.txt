@@ -1,0 +1,5 @@
+Demo-1: Find the movie with the lowest average rating - with DataFrames
+------------------------------------------------------------------------
+All steps same as Spark-Streaming_demo_commands.txt and run
+
+--> spark-submit LowestRatedMovieDataFrame.py

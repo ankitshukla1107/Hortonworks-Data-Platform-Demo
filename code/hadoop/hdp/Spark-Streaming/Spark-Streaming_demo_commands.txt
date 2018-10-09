@@ -1,0 +1,19 @@
+Demo-1: Analyze web logs published with Flume using Spark Streaming :
+-------------------------------------------------------------------
+
+1) At location /home/maria_dev---> put sparkstreamingflume.conf
+
+2) At location /home/maria_dev---> put SparkFlume.py
+
+3) Create directory with name "checkpoint" at location /home/maria_dev/
+
+4) export SPARK_MAJOR_VERSION=2
+
+5) At location /home/maria_dev ---> spark-submit --packages org.apache.spark:spark-streaming-flume_2.11:2.3.0 SparkFlume.py
+
+6)  At location ---> /usr/hdp/current/flume-server
+Start Agent with command--> bin/flume-ng agent --conf conf --conf-file /home/maria_dev/sparkstreamingflume.conf --name a1
+
+7) Open third window and Drop access_log.txt file to spool directory available at /home/maria_dev--> cp access_log.txt spool/log22.txt
+
+8) cp access_log.txt spool/log23.txt (Output same data will be doubled)

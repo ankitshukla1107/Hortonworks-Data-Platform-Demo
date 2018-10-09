@@ -1,0 +1,20 @@
+Demo-1: Find the movie with the lowest average rating - with RDDs
+------------------------------------------------------------------
+
+Steps-
+------
+
+1) Configure Spark in Ambari:
+------------------------------
+ a) Go to Spark Config section in Ambari and change Advanced spark2-log4j-properties---> Set log4j.rootCategory=ERROR, console
+Save by --> change log level for spark to error
+
+ b) Restart required components
+ 
+2) Make sure data (ml-100k folder with u.data and u.item files are present) on HDFS at location --> /user/maria_dev
+
+3) Create ml-100k folder at /home/maria_dev and -->  inside ml-100k folder ---> put u.item
+
+4) Run LowestRatedMovieSpark.py file using below command at /home/maria_dev/
+--> spark-submit LowestRatedMovieSpark.py
+

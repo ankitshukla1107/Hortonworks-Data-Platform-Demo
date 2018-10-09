@@ -1,0 +1,35 @@
+Demo: Import movie ratings into HBase
+a) Create a HBase table for movie ratings by user
+b) Then show we can quickly query it for individual users
+c) Good example of sparse data
+
+DATA MODEL OF HBASE TABLE IS AS BELOW-
+--------------------------------------
+						Column family: rating
+			rating:50	rating:33	rating:223
+userID		   1			5			5
+
+where userID is unique key, rating:50 is column family identifier
+
+Built a service that gives all the ratings for given userID
+
+HOW ARE WE DOING IT?
+---------------------
+python client --> REST service --> HBase --> HDFS
+
+Demo: (Not Working)
+-------------------
+
+1) Login as admin and start HBASE
+2) Launch REST Server sitting on top of HBase so that it can communicate with outside world by executing below command at /home/maria_dev from root user
+--> /usr/hdp/current/hbase-master/bin/hbase-daemon.sh start rest -p 8000 --infoport 8001
+
+3) yum -y install python-pip
+
+4) Ensure u.data is available at /home/maria_dev/ml-100k/
+
+5) Run HBaseExamples.py available at /home/maria_dev
+
+6) Stop services
+a) /usr/hdp/current/hbase-master/bin/hbase-daemon.sh stop rest
+

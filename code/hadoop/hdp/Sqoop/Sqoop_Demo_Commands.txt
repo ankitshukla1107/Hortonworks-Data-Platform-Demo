@@ -1,0 +1,62 @@
+Demo-1: Integrating mySQL and Hadoop:
+-------------------------------------
+
+Import MovieLens data into a MySQL database
+Import the movies to HDFS
+Import the movies into Hive
+Export the movies back to mySQL
+
+Steps:
+-------
+
+1) Import MovieLens data into a MySQL database-
+
+a) Connect to mysql and create database "movielens"
+b) Use movielens.sql which contains DDL and DML for populating movielens database
+c) Connect to mysql and remove any international characters and set UTF characters from data by executing below command-->
+	SET NAMES 'utf8';
+	SET CHARACTER SET utf8
+
+d) mysql> use movielens
+e) mysql> source movielens.sql
+f) mysql> show tables
+g) Query data-
+   mysql> SELECT movies.title, COUNT(ratings.movie_id) AS ratingCount FROM movies INNER JOIN ratings ON movies.id = ratings.movie_id GROUP BY movies.title ORDER BY ratingCount;
+	  
+2) Use Sqoop to import data from MySQL to HDFS 
+-----------------------------------------------
+
+a) Set priviledges on mysql database tables so that sqoop can communicate with it.
+mysql> GRANT ALL PRIVILEGES ON movielens.* to ''@'localhost';
+
+ERROR 1133 (42000): Can't find any matching row in the user table (Ignore it)
+
+Follow below steps to resolve above issue-
+
+mysql> grant all privileges on *.* to 'root'@'localhost' with grant option;                                                           
+Query OK, 0 rows affected (0.00 sec)                                                                                                  
+                                                                                                                                      
+mysql> flush privileges;                                                                                                              
+Query OK, 0 rows affected (0.01 sec)    
+
+b) sqoop import --connect jdbc:mysql://localhost/movielens --username=root --password=cengadmin --driver com.mysql.jdbc.Driver --table movies -m 1
+
+c) Go to Ambari Files view at location --> /user/maria_dev--> movies directory should be created 
+
+d) Clean that directory after use
+
+3) Use Sqoop to import data from MySQL to Hive-
+----------------------------------------------
+sqoop import --connect jdbc:mysql://localhost/movielens --username=root --password=cengadmin --driver com.mysql.jdbc.Driver --table movies -m 1 --hive-import
+
+4) Use Sqoop to export data from Hadoop to MySQL
+-------------------------------------------------
+data is available at /apps/hive/warehouse location in Files view in Ambari
+
+a) Set up table in mysql where export is required
+mysql> use movielens;
+mysql> CREATE TABLE exported_movies (id INTEGER, title VARCHAR(255), releaseDate DATE);
+
+b) sqoop export --connect jdbc:mysql://localhost/movielens --username=root --password=cengadmin --driver com.mysql.jdbc.Driver --table exported_movies -m 1 --export-dir /apps/hive/warehouse/movies --input-fields-terminated-by '\0001'
+
+	
